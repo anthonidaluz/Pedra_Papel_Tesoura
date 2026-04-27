@@ -1,4 +1,5 @@
 ﻿using System;
+using Pedra_Papel_Tesoura.Entidades;
 
 namespace Pedra_Papel_Tesoura
 {
@@ -6,8 +7,9 @@ namespace Pedra_Papel_Tesoura
     {
         static void Main(string[] args)
         {
-            string[] opcoes = { "pedra", "papel", "tesoura" };
-            Random random = new Random();
+            Jogador jogador1 = new Jogador("Você");
+            Computador bot = new Computador();
+            Jogo arbitro = new Jogo();
 
             bool jogarNovamente = true;
 
@@ -22,9 +24,9 @@ namespace Pedra_Papel_Tesoura
 
                 Console.Write("Escolha Pedra, Papel ou Tesoura: ");
 
-                string escolhaUsuario = Console.ReadLine().Trim().ToLower();
+                jogador1.Escolha = Console.ReadLine().Trim().ToLower();
 
-                if (escolhaUsuario != "pedra" && escolhaUsuario != "papel" && escolhaUsuario != "tesoura")
+                if (jogador1.Escolha != "pedra" && jogador1.Escolha != "papel" && jogador1.Escolha != "tesoura")
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine("Opção inválida! Pressione ENTER para tentar novamente.");
@@ -33,23 +35,20 @@ namespace Pedra_Papel_Tesoura
                     continue;
                 }
 
-                int indiceComputador = random.Next(0, 3);
-                string escolhaComputador = opcoes[indiceComputador];
+                bot.SortearJogada();
 
                 Console.WriteLine("\n===========================================");
-                Console.WriteLine($"Você escolheu      : {escolhaUsuario.ToUpper()}");
-                Console.WriteLine($"Computador escolheu: {escolhaComputador.ToUpper()}");
+                Console.WriteLine($"{jogador1.Nome} escolheu      : {jogador1.Escolha.ToUpper()}");
+                Console.WriteLine($"Computador escolheu: {bot.Escolha.ToUpper()}");
                 Console.WriteLine("===========================================\n");
 
-                if (escolhaUsuario == escolhaComputador)
+                string resultado = arbitro.DeterminarVencedor(jogador1.Escolha, bot.Escolha);
+
+                if (resultado == "EMPATE")
                 {
                     Console.WriteLine("RESULTADO: EMPATE! Ninguém ganhou.");
                 }
-                else if (
-                    (escolhaUsuario == "pedra" && escolhaComputador == "tesoura") ||
-                    (escolhaUsuario == "papel" && escolhaComputador == "pedra") ||
-                    (escolhaUsuario == "tesoura" && escolhaComputador == "papel")
-                )
+                else if (resultado == "JOGADOR")
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("RESULTADO: VOCÊ VENCEU! ");
@@ -61,6 +60,7 @@ namespace Pedra_Papel_Tesoura
                     Console.WriteLine("RESULTADO: O COMPUTADOR VENCEU! ");
                     Console.ResetColor();
                 }
+
                 Console.Write("\nDeseja jogar novamente? (S/N): ");
                 string resposta = Console.ReadLine().Trim().ToUpper();
 
